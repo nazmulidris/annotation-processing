@@ -1,0 +1,4 @@
+# Register the processor w/ javac. The order in which these are registered matters, as it is the sequence in which
+# the processors are executed (chained).
+sample.annotation.DebugAnnotationProcessor
+sample.annotation.MySampleAnnotationProcessor
