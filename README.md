@@ -1,9 +1,12 @@
 # annotation-processing
 
-This repo actually contains two IDEA projects. Do not import this folder into IDEA. Instead import each of the sub
-folders.
+This repo actually contains two IDEA projects. Please do not import this folder into IDEA, instead import each of the
+sub folders.
 
-# Change master to main
+1. `simple-project` - Java annotation processing example using `javac` that supports debugging in IDEA
+2. `android-project` - Kotlin annotation processing example
+
+# Change master to main (2020-06-27)
 
 The
 [Internet Engineering Task Force (IETF) points out](https://tools.ietf.org/id/draft-knodel-terminology-00.html#rfc.section.1.1.1)
