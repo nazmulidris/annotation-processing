@@ -3,8 +3,8 @@
 This repo actually contains two IDEA projects. Please do not import this folder into IDEA, instead import each of the
 sub folders.
 
-1. `simple-project` - Java annotation processing example using `javac` that supports debugging in IDEA
-2. `android-project` - Kotlin annotation processing example
+1. `java-javac-project` - Java annotation processing example using `javac` that supports debugging in IDEA
+2. `kotlin-android-project` - Kotlin annotation processing example
 
 # Change master to main (2020-06-27)
 
