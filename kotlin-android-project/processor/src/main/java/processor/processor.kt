@@ -19,38 +19,44 @@ package processor
 import annotations.AdapterModel
 import annotations.ViewHolderBinding
 import codegen.AdapterCodeGeneratorBuilder
+import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.FileSpec
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.RoundEnvironment
-import javax.annotation.processing.SupportedSourceVersion
+import javax.annotation.processing.*
+import javax.annotation.processing.Processor
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
+@AutoService(Processor::class)
 class Processor : AbstractProcessor() {
-  private val KAPT_KOTLIN_GENERATED_OPTION_NAME: String = "kapt.kotlin.generated"
   private val MyClassAnnotationClass = AdapterModel::class.java
   private val MyPropertyAnnotationClass = ViewHolderBinding::class.java
+  private lateinit var messager: Messager
 
   override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(MyClassAnnotationClass.canonicalName)
 
+  override fun init(processingEnv: ProcessingEnvironment) {
+    super.init(processingEnv)
+    messager = processingEnv.messager
+  }
+
   private fun printNoteMessage(msg: String) {
-    processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "\t$msg\r\r")
+    messager.printMessage(Diagnostic.Kind.NOTE, "\t$msg\r\r")
   }
 
   private fun printErrorMessage(msg: String) {
-    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "\t$msg\r\r")
+    messager.printMessage(Diagnostic.Kind.ERROR, "\t$msg\r\r")
   }
 
   override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
     printNoteMessage("🚀 Processor start")
     try {
-      val kaptKotlinGeneratedDir: String = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME] ?: return false
+      val kaptKotlinGeneratedDir: String = processingEnv.options["kapt.kotlin.generated"] ?: return false
       processAnnotations(kaptKotlinGeneratedDir, roundEnv)
     }
     catch (err: Throwable) {

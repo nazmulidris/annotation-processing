@@ -3,7 +3,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Introduction](#introduction)
 - [Annotation processing](#annotation-processing)
 - [Project structure](#project-structure)
@@ -110,5 +109,7 @@ To learn more about debugging your annotation process, check out this link:
 # References
 
 - [Android & Kotlin annotation processing tutorial](https://www.raywenderlich.com/8574679-annotation-processing-supercharge-your-development)
+- [Another tutorial like above](https://medium.com/@jintin/annotation-processing-in-java-3621cb05343a)
 - [Java annotation processing tutorial](http://hannesdorfmann.com/annotation-processing/annotationprocessing101)
+- [Runtime annotations and reflection](https://gist.github.com/championswimmer/d7b9be0c26ac88de2455a80117137ec6)
 - [Kotlin in Action book](https://livebook.manning.com/book/kotlin-in-action/chapter-10/55)
