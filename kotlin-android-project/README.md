@@ -6,6 +6,7 @@
 - [Introduction](#introduction)
 - [Annotation processing](#annotation-processing)
 - [Project structure](#project-structure)
+- [Future work - building an index of annotated classes](#future-work---building-an-index-of-annotated-classes)
 - [Converting Groovy scripts to Kotlin DSL](#converting-groovy-scripts-to-kotlin-dsl)
 - [Debugging](#debugging)
 - [References](#references)
@@ -88,6 +89,25 @@ summary:
 
 1. The annotations have to be imported in various modules.
 2. The processor has to be run as well by the `app` module.
+
+# Future work - building an index of annotated classes
+
+There are times when it would be useful to find all the classes that are annotated w/ a particular annotation. For a
+made up example, in our activity, instead of populating the RecyclerView adapter w/ dummy data, we could have found all
+the classes and methods where our annotations appear in the code, and then display that in the list.
+
+Sadly, in Android due to the way in which DEX files work, it's not as easy as it would be in a normal JVM. Libraries
+like [classgraph](https://github.com/classgraph/classgraph) fail to work on Android. And there are hacks to scan DEX
+files to find annotated classes, but those
+[are slow and dangerous to use](https://bravenewgeek.com/implementing-spring-like-classpath-scanning-in-android/).
+
+I was also curious about how ButterKnife works, where you have to set it in motion by calling `bind(this)`. Even when
+classes are generated, they won't "activate" until they are referenced from someplace. So at some point, the code using
+the generated code has to make a call to load the generated class. In our activity, this happens when `PersonAdapter` is
+directly referenced. But this is not optimal. Perhaps a better way would be one by ButterKnife used in this
+[nice example here](https://emo-pass.com/2017/11/26/builing-things-with-java-reflection-and-annotation-processing/). It
+uses reflection and annotation processing in order to work. Here's the
+[code for the `bind()` method](https://github.com/quangctkm9207/prefpin/blob/master/prefpin/src/main/java/prefpin/PrefPin.java#L42).
 
 # Converting Groovy scripts to Kotlin DSL
 
