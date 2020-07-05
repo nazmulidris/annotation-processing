@@ -29,9 +29,7 @@
       tools:ignore="GoogleAppIndexingWarning">
 
     <!-- Main Activity -->
-    <activity
-        android:name="codegenrvadapter.MainActivity"
-        android:theme="@style/AppTheme">
+    <activity android:name="codegenrvadapter.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

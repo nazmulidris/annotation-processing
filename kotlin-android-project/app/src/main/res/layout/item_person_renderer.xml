@@ -23,13 +23,13 @@
     android:padding="@dimen/large_margin">
 
   <TextView
-      android:id="@+id/name"
+      android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       style="@style/TextAppearance.AppCompat.Headline" />
 
   <TextView
-      android:id="@+id/address"
+      android:id="@+id/subtitle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/small_margin"

@@ -22,6 +22,6 @@ import codegenrvadapter.android.autoadapter.R
 
 @AdapterModel(R.layout.item_person_renderer)
 data class Person(
-    @ViewHolderBinding(R.id.name) val name: String,
-    @ViewHolderBinding(R.id.address) val address: String
+    @ViewHolderBinding(R.id.title) val name: String,
+    @ViewHolderBinding(R.id.subtitle) val address: String
 )
