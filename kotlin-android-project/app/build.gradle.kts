@@ -63,6 +63,9 @@ dependencies {
   // Add dependency on our custom annotations.
   implementation(project(":annotations"))
 
+  // Add dependency on the codegen for our custom annotations.
+  implementation(project(":processor"))
+
   // Add dependency on our custom annotation processor.
   kapt(project(":processor"))
 }

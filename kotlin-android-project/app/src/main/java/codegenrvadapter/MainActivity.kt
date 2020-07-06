@@ -19,26 +19,50 @@ package codegenrvadapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import codegen.AdapterUtils
 import codegenrvadapter.android.autoadapter.R
+import index.AdapterIndex
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    // Switch to AppTheme for displaying the activity
-    setTheme(R.style.AppTheme)
-
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
     recyclerView.apply {
       layoutManager = LinearLayoutManager(this@MainActivity)
-      adapter = PersonAdapter(
-          listOf(
-              Person("Jane Doe", "123 Street"),
-              Person("John Doe", "789 Street")
-          )
-      )
+    }
+
+    // Comment one or the other to load the desired adapter via reflection.
+    bindDebugModelAdapter()
+    //bindPersonModelAdapter()
+  }
+
+  private fun bindDebugModelAdapter() {
+    val items: MutableList<DebugModel> = mutableListOf()
+    AdapterUtils.getAdapterIndex()?.apply {
+      (this as AdapterIndex).index.map { classAnnotationHolder ->
+        val title: String = classAnnotationHolder.name
+        val description: String = classAnnotationHolder.list.joinToString(",", "{", "}") { it.name }
+        items.add(DebugModel(title, description))
+      }
+      val adapter = AdapterUtils.createBindingForModel(DebugModel::class.java, items)
+      adapter?.apply {
+        recyclerView.adapter = this as RecyclerView.Adapter<*>
+      }
+    }
+  }
+
+  private fun bindPersonModelAdapter() {
+    val items = listOf(
+        PersonModel("Jane Doe", "123 Street"),
+        PersonModel("John Doe", "789 Street")
+    )
+    val adapter = AdapterUtils.createBindingForModel(PersonModel::class.java, items)
+    adapter?.apply {
+      recyclerView.adapter = this as RecyclerView.Adapter<*>
     }
   }
 }

@@ -16,6 +16,8 @@
 
 package processor
 
+const val SUFFIX_FOR_GENERATED_CLASS = "Adapter"
+
 /**
  *  Contains all the information required to generate an adapter from a class level annotation
  * [annotations.AdapterModel].
@@ -27,7 +29,7 @@ data class AdapterModelAnnotationMetadata(
     val rowRendererLayoutId: Int,
     val viewHolderBindingAnnotations: List<ViewHolderBindingAnnotationMetadata>
 ) {
-  val generatedAdapterClassName: String = "${modelClassName}Adapter"
+  val generatedAdapterClassName: String = "${modelClassName}${processor.SUFFIX_FOR_GENERATED_CLASS}"
 }
 
 /** Store information extracted from the property level annotation [annotations.ViewHolderBinding]. */

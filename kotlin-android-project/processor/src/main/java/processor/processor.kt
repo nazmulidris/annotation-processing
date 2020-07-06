@@ -19,6 +19,9 @@ package processor
 import annotations.AdapterModel
 import annotations.ViewHolderBinding
 import codegen.AdapterCodeGeneratorBuilder
+import codegen.AdapterIndexGeneratorBuilder
+import codegen.AdapterIndexGeneratorBuilder.Companion.addToIndex
+import codegen.AdapterIndexGeneratorBuilder.Companion.printIndex
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.FileSpec
 import java.io.File
@@ -31,6 +34,10 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
+/**
+ * This processor is automatically loaded via `AutoService`. It generates adapters for all the data models, and it also
+ * generates a static index of all the usages of the annotations in the codebase.
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor::class)
 class Processor : AbstractProcessor() {
@@ -45,11 +52,11 @@ class Processor : AbstractProcessor() {
     messager = processingEnv.messager
   }
 
-  private fun printNoteMessage(msg: String) {
+  fun printNoteMessage(msg: String) {
     messager.printMessage(Diagnostic.Kind.NOTE, "\t$msg\r\r")
   }
 
-  private fun printErrorMessage(msg: String) {
+  fun printErrorMessage(msg: String) {
     messager.printMessage(Diagnostic.Kind.ERROR, "\t$msg\r\r")
   }
 
@@ -74,7 +81,7 @@ class Processor : AbstractProcessor() {
     val classElements: MutableSet<out Element> = roundEnv.getElementsAnnotatedWith(MyClassAnnotationClass)
     return classElements.forEach { classElement ->
       val metadata: AdapterModelAnnotationMetadata = processClassElements(classElement)
-      generateSourceFiles(kaptKotlinGeneratedDir, metadata)
+      generateAdapterSourcesAndStaticIndex(kaptKotlinGeneratedDir, metadata)
     }
   }
 
@@ -87,7 +94,9 @@ class Processor : AbstractProcessor() {
     val modelName: String = classElement.simpleName.toString()
     val layoutId: Int = classElement.getAnnotation(MyClassAnnotationClass).rowRendererLayoutId
     val viewHolderBindingData: List<ViewHolderBindingAnnotationMetadata> = processEnclosedPropertyElements(classElement)
-    return AdapterModelAnnotationMetadata(packageName, modelName, layoutId, viewHolderBindingData)
+    val adapterModelMetadata = AdapterModelAnnotationMetadata(packageName, modelName, layoutId, viewHolderBindingData)
+    addToIndex(adapterModelMetadata)
+    return adapterModelMetadata
   }
 
   /**
@@ -109,14 +118,19 @@ class Processor : AbstractProcessor() {
         }
       }
 
-  private fun generateSourceFiles(kaptKotlinGeneratedDir: String, metadata: AdapterModelAnnotationMetadata) =
-      FileSpec.builder(metadata.packageName, metadata.generatedAdapterClassName)
-          .addType(
-              AdapterCodeGeneratorBuilder(metadata).build()
-          )
-          .build()
-          .writeTo(
-              File(kaptKotlinGeneratedDir)
-          )
+  private fun generateAdapterSourcesAndStaticIndex(kaptKotlinGeneratedDir: String, metadata: AdapterModelAnnotationMetadata) {
+    // Generate adapter models.
+    FileSpec.builder(metadata.packageName, metadata.generatedAdapterClassName)
+        .addType(
+            AdapterCodeGeneratorBuilder(metadata).build()
+        )
+        .build()
+        .writeTo(
+            File(kaptKotlinGeneratedDir)
+        )
 
+    // Generate static index of annotation usages in codebase.
+    AdapterIndexGeneratorBuilder().writeToFile(kaptKotlinGeneratedDir)
+    printIndex(this)
+  }
 }

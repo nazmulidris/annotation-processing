@@ -20,8 +20,8 @@ import annotations.AdapterModel
 import annotations.ViewHolderBinding
 import codegenrvadapter.android.autoadapter.R
 
-@AdapterModel(R.layout.item_person_renderer)
-data class Person(
+@AdapterModel(R.layout.row_renderer_simple)
+data class PersonModel(
     @ViewHolderBinding(R.id.title) val name: String,
     @ViewHolderBinding(R.id.subtitle) val address: String
 )

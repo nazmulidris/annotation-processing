@@ -21,7 +21,15 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import processor.AdapterModelAnnotationMetadata
 import processor.ViewHolderBindingAnnotationMetadata
 
-/** [More info on KotlinPoet](https://github.com/square/kotlinpoet). */
+/**
+ * Generates a RecyclerView adapter for every model class that's annotated w/ [annotations.AdapterModel]. The implicit contract
+ * is that a List of items (of the type of the model class) must be passed to the constructor of this generated adapter.
+ *
+ * For example, for a model class `PersonModel`, a `PersonModelAdapter` class is generated. You can reference this class
+ * directly in your code, or you can get to it reflectively via [AdapterUtils.createBindingForModel].
+ *
+ * [More info on KotlinPoet](https://github.com/square/kotlinpoet).
+ */
 class AdapterCodeGeneratorBuilder(metadata: AdapterModelAnnotationMetadata) {
   private val adapterModelClassMetadata: TopLevelClassMetadata = TopLevelClassMetadata(metadata.copy())
   private val viewHolderClassMetadata: NestedClassMetadata = NestedClassMetadata(metadata.copy())
@@ -51,6 +59,7 @@ class AdapterCodeGeneratorBuilder(metadata: AdapterModelAnnotationMetadata) {
   )
 
   fun build(): TypeSpec = TypeSpec.classBuilder(adapterModelClassMetadata.generatedAdapterClassName)
+      .addModifiers(KModifier.DATA)
       // Merge the primary constructor parameter and property (below).
       .primaryConstructor(
           FunSpec.constructorBuilder()
